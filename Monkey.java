@@ -48,8 +48,8 @@ public class Monkey  {
     private DcMotor mtrMonkeyLeftArm, mtrMonkeyRightArm;
    
     //Monkey trunk motor constants
-    private static Double MONKEY_PULLUP_RIGHT_PWR=.99d, MONKEY_DOWN_RIGHT_PWR=-.66d;
-    private static Double MONKEY_PULLUP_LEFT_PWR=.95d, MONKEY_DOWN_LEFT_PWR=-.63d;
+    private static Double MONKEY_PULLUP_RIGHT_PWR=.5d, MONKEY_DOWN_RIGHT_PWR=-.99d;
+    private static Double MONKEY_PULLUP_LEFT_PWR=.5d, MONKEY_DOWN_LEFT_PWR=-.99d;
     private static Double STICK_DEAD_ZONE=.5;
     
     
