@@ -47,7 +47,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
       @Override
       public void init() {
-          crab.initialize(this, crab.CHASSIS_LEFT_FWD,"mtrLeftFront",
+          crab.initialize(this, crab.CHASSIS_RIGHT_FWD,"mtrLeftFront",
                   "mtrLeftBack", "mtrRightFront","mtrRightBack",
                   "navx",25, .85);
           crab.chassisDontUseLeftTrigBmpr(true);

@@ -1,4 +1,4 @@
-  /*
+/*
 Copyright (c) 2016 Robert Atkinson
 
 All rights reserved.
@@ -37,63 +37,63 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
-  @TeleOp(name="T_BronxZoo", group="Demonstration")
-  //@Disabled
-  public class T_BronxZoo extends OpMode {
+@TeleOp(name="T_BronxZoo", group="Demonstration")
+//@Disabled
+public class T_BronxZoo extends OpMode {
 
-      //private  boolean gbVisionProb=false,gbNavXProb=false;
-        /* Declare OpMode members. */
-      private Crab_v1 crab = new Crab_v1();   // Use Omni-Directional drive system
-      private ArcherFish archerfish = new ArcherFish(); 
+  //private  boolean gbVisionProb=false,gbNavXProb=false;
+    /* Declare OpMode members. */
+  private Crab_v1 crab = new Crab_v1();   // Use Omni-Directional drive system
+  private ArcherFish archerfish = new ArcherFish();
 
-      @Override
-      public void init() {
-          crab.initialize(this, crab.CHASSIS_LEFT_FWD,"mtrLeftFront",
-                  "mtrLeftBack", "mtrRightFront","mtrRightBack",
-                  "navx",25, .85);
-          crab.chassisDontUseLeftTrigBmpr(true);
-          crab.resetTeleop(false);
-          archerfish.initialize(this);
-          // Wait for the game to start (driver presses PLAY)
-         // Prompt User
-          telemetry.addData("Press Start", " >");
-          telemetry.update();
-      }
-
-      @Override
-      public void stop() {
-
-          crab.closeGraceful(this);
-          archerfish.shutdown(this);
-          telemetry.addData("[]", "Shutting Down. Bye!");
-          telemetry.update();
-      }
-
-      /*
-       * Code to run when the op mode is first enabled goes here
-       * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#start()
-      */
-      @Override
-      public void init_loop() {
-
-      }
-
-      /*
-       * This method will be called repeatedly in a loop
-       * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#loop()
-      */
-      @Override
-      public void loop() {
-
-          // run until the end of the match (driver presses STOP)
-          crab.operate(this,gamepad1);
-          archerfish.operate(this,gamepad2);
-
-          telemetry.update();
-
-      }
-      private void init_hardware() {
-
-
-      }
+  @Override
+  public void init() {
+      crab.initialize(this, crab.CHASSIS_RIGHT_FWD,"mtrLeftFront",
+              "mtrLeftBack", "mtrRightFront","mtrRightBack",
+              "navx",25, .85);
+      crab.chassisDontUseLeftTrigBmpr(true);
+      crab.resetTeleop(false);
+      archerfish.initialize(this);
+      // Wait for the game to start (driver presses PLAY)
+     // Prompt User
+      telemetry.addData("Press Start", " >");
+      telemetry.update();
   }
+
+  @Override
+  public void stop() {
+
+      crab.closeGraceful(this);
+      archerfish.shutdown(this);
+      telemetry.addData("[]", "Shutting Down. Bye!");
+      telemetry.update();
+  }
+
+  /*
+   * Code to run when the op mode is first enabled goes here
+   * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#start()
+  */
+  @Override
+  public void init_loop() {
+
+  }
+
+  /*
+   * This method will be called repeatedly in a loop
+   * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#loop()
+  */
+  @Override
+  public void loop() {
+
+      // run until the end of the match (driver presses STOP)
+      crab.operate(this,gamepad1);
+      archerfish.operate(this,gamepad2);
+
+      telemetry.update();
+
+  }
+  private void init_hardware() {
+
+
+  }
+}
