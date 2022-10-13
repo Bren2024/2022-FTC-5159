@@ -19,6 +19,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.Gyroscope;
@@ -45,15 +46,14 @@ import java.util.Date;
 
 public class Monkey  {
     /* Declare OpMode members. */
-    private DcMotor mtrMonkeyLeftArm, mtrMonkeyRightArm;
+    private DcMotor mtrMonkey;
    
     //Monkey trunk motor constants
-    private static Double MONKEY_PULLUP_RIGHT_PWR=.5d, MONKEY_DOWN_RIGHT_PWR=-.99d;
-    private static Double MONKEY_PULLUP_LEFT_PWR=.5d, MONKEY_DOWN_LEFT_PWR=-.99d;
+    private static Double MONKEY_UP_PWR=.5d, MONKEY_DOWN_PWR=-.99d;
     private static Double STICK_DEAD_ZONE=.5;
-    
-    
-    
+
+    private CRServo srvoClaw;
+
     private final int CAPSTATE_IDLE=0;
     private final int CAPSTATE_BITING = 1;
     private final int CAPSTATE_RAISING_NECK= 2;
@@ -70,18 +70,12 @@ public class Monkey  {
         opMode.telemetry.addData("Monkey", "    If not, Hit Stop, then re-Init");
         
         //Monkey Motor
-        mtrMonkeyLeftArm = opMode.hardwareMap.get(DcMotor.class, "mtrMonkeyLeftArm");
-        mtrMonkeyLeftArm.setDirection(DcMotorSimple.Direction.FORWARD);
-        mtrMonkeyRightArm = opMode.hardwareMap.get(DcMotor.class, "mtrMonkeyRightArm");
-        mtrMonkeyRightArm.setDirection(DcMotorSimple.Direction.REVERSE);
-        //motor_ET.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
-        mtrMonkeyLeftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        mtrMonkeyLeftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
-        mtrMonkeyLeftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mtrMonkeyRightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        mtrMonkeyRightArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
-        mtrMonkeyRightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mtrMonkey = opMode.hardwareMap.get(DcMotor.class, "mtrMonkey");
+        mtrMonkey.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        mtrMonkey.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        mtrMonkey.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        mtrMonkey.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         
         opMode.telemetry.addData("Monkey", "    Initialized");
         
@@ -89,25 +83,19 @@ public class Monkey  {
     }
 
     public void operate(OpMode opMode) {
-        opMode.telemetry.addData("Monkey","Left Pos:%d Pwr:%.2f",
-           mtrMonkeyLeftArm.getCurrentPosition(),mtrMonkeyLeftArm.getPower());
-      
-        opMode.telemetry.addData("Monkey","Right Pos:%d Pwr:%.2f",
-           mtrMonkeyRightArm.getCurrentPosition(),mtrMonkeyRightArm.getPower());
+        opMode.telemetry.addData("Monkey","Pos:%d Pwr:%.2f",
+           mtrMonkey.getCurrentPosition(),mtrMonkey.getPower());
 
          //elevator motor 
         if(opMode.gamepad2.a) {
-            mtrMonkeyLeftArm.setPower(MONKEY_PULLUP_LEFT_PWR);
-            mtrMonkeyRightArm.setPower(MONKEY_PULLUP_RIGHT_PWR);
+            mtrMonkey.setPower(MONKEY_UP_PWR);
             return;
         }
         if(opMode.gamepad2.b) {
-            mtrMonkeyLeftArm.setPower(MONKEY_DOWN_LEFT_PWR);
-            mtrMonkeyRightArm.setPower(MONKEY_DOWN_RIGHT_PWR);
+            mtrMonkey.setPower(MONKEY_DOWN_PWR);
             return;
         }
-        mtrMonkeyLeftArm.setPower(0);
-        mtrMonkeyRightArm.setPower(0);
+        mtrMonkey.setPower(0);
         
         
         //teleopCap(false);
@@ -118,7 +106,22 @@ public class Monkey  {
         
 
     }
-    /*
+
+
+    // TODO: autonomous elevator up and down (encodner), autonomous servo(time)
+    public void autonExtendMonkeyUp(LinearOpMode linearOpMode, int extendPos) {
+        int monkeyCurrentPos = mtrMonkey.getCurrentPosition();
+        mtrMonkey.setTargetPosition(monkeyCurrentPos + extendPos);
+        if (monkeyCurrentPos == mtrMonkey.getTargetPosition()) {
+            mtrMonkey.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        } else {
+            mtrMonkey.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+    }
+
+
+
+
     public void autonExtendNeckLOp(LinearOpMode linopMode, int nExtendPos) {
         int nNeckCurrPos=mtrMonkey.getCurrentPosition();
         double dPwr=0d;
@@ -207,5 +210,5 @@ public class Monkey  {
     
         
     }
-    */
+
 }

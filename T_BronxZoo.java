@@ -44,7 +44,6 @@ public class T_BronxZoo extends OpMode {
   //private  boolean gbVisionProb=false,gbNavXProb=false;
     /* Declare OpMode members. */
   private Crab_v1 crab = new Crab_v1();   // Use Omni-Directional drive system
-  private ArcherFish archerfish = new ArcherFish();
 
   @Override
   public void init() {
@@ -53,7 +52,6 @@ public class T_BronxZoo extends OpMode {
               "navx",25, .85);
       crab.chassisDontUseLeftTrigBmpr(true);
       crab.resetTeleop(false);
-      archerfish.initialize(this);
       // Wait for the game to start (driver presses PLAY)
      // Prompt User
       telemetry.addData("Press Start", " >");
@@ -64,7 +62,6 @@ public class T_BronxZoo extends OpMode {
   public void stop() {
 
       crab.closeGraceful(this);
-      archerfish.shutdown(this);
       telemetry.addData("[]", "Shutting Down. Bye!");
       telemetry.update();
   }
@@ -87,7 +84,6 @@ public class T_BronxZoo extends OpMode {
 
       // run until the end of the match (driver presses STOP)
       crab.operate(this,gamepad1);
-      archerfish.operate(this,gamepad2);
 
       telemetry.update();
 
