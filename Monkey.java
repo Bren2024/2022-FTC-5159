@@ -29,6 +29,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,7 +45,7 @@ import java.util.Date;
  * or add a @Disabled annotation to prevent this OpMode from being added to the Driver Station
  */
 
-public class Monkey  {
+public class Monkey {
     /* Declare OpMode members. */
     private DcMotor mtrMonkey;
    
@@ -78,20 +79,18 @@ public class Monkey  {
         mtrMonkey.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         
         opMode.telemetry.addData("Monkey", "    Initialized");
-        
-
     }
 
     public void operate(OpMode opMode) {
         opMode.telemetry.addData("Monkey","Pos:%d Pwr:%.2f",
-           mtrMonkey.getCurrentPosition(),mtrMonkey.getPower());
+           mtrMonkey.getCurrentPosition(), mtrMonkey.getPower());
 
          //elevator motor 
-        if(opMode.gamepad2.a) {
+        if (opMode.gamepad2.a) {
             mtrMonkey.setPower(MONKEY_UP_PWR);
             return;
         }
-        if(opMode.gamepad2.b) {
+        if (opMode.gamepad2.b) {
             mtrMonkey.setPower(MONKEY_DOWN_PWR);
             return;
         }
@@ -108,107 +107,105 @@ public class Monkey  {
     }
 
 
-    // TODO: autonomous elevator up and down (encodner), autonomous servo(time)
-    public void autonExtendMonkeyUp(LinearOpMode linearOpMode, int extendPos) {
+    // TODO: autonomous elevator up and down (encoder), autonomous servo(time)
+    public void autoExtendMonkeyUp(LinearOpMode linearOpMode, int extendPos) {
         int monkeyCurrentPos = mtrMonkey.getCurrentPosition();
-        mtrMonkey.setTargetPosition(monkeyCurrentPos + extendPos);
-        if (monkeyCurrentPos == mtrMonkey.getTargetPosition()) {
-            mtrMonkey.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        } else {
-            mtrMonkey.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
+        int extendPosTicks = (int)DriveConstants.inchesToEncoderTicks(extendPos);
+
+        mtrMonkey.setTargetPosition(monkeyCurrentPos + extendPosTicks);
+        mtrMonkey.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
+    public void autoServoOp(LinearOpMode linearOpMode, int servoPos) {
 
-
-
-    public void autonExtendNeckLOp(LinearOpMode linopMode, int nExtendPos) {
-        int nNeckCurrPos=mtrMonkey.getCurrentPosition();
-        double dPwr=0d;
-        //check if need to extend or contract
-        if(nExtendPos>nNeckCurrPos) {
-            //need to extend
-            dPwr=GIRAFFE_EXTEND_PWR;
-            while(nExtendPos>mtrMonkey.getCurrentPosition()){
-                mtrMonkey.setPower(GIRAFFE_EXTEND_PWR);
-            }
-            mtrMonkey.setPower(0d);
-        }
-        else if (nExtendPos<nNeckCurrPos) {
-            dPwr=GIRAFFE_EXTEND_PWR;
-            while(nExtendPos<mtrMonkey.getCurrentPosition()){
-                mtrMonkey.setPower(-GIRAFFE_EXTEND_PWR);
-            }
-            mtrMonkey.setPower(0d);
-        }
-    }
-    
-    public void autonNeckDownLOp(LinearOpMode linopMode) {
-        srvoMonkeyNeck.setPosition(GIRAFFE_NECK_DOWN);
-    }
-    
-    public void autonNeckUpLOp(LinearOpMode linopMode) {
-        srvoMonkeyNeck.setPosition(GIRAFFE_NECK_UP);
     }
 
-    public void autonOpenMouthLOp(LinearOpMode linopMode) {
-        srvoMonkeyMouth.setPosition(GIRAFFE_MOUTH_OPEN);
-    }
-    
-    public void autonCloseMouthLOp(LinearOpMode linopMode) {
-        srvoMonkeyMouth.setPosition(GIRAFFE_MOUTH_CLOSED);
-    }
-    private int teleopCap(boolean bButtonPressed) {
-        //if got here, the cap button was pressed
-        //check if this is the first time pressed
-        long lTimeStamp;
-        if(bButtonPressed) {
-            //starting capping
-            glCapTimeStamp=System.currentTimeMillis();
-            gnCapState=CAPSTATE_BITING;
-            srvoMonkeyMouth.setPosition(GIRAFFE_BITE_ELEMENT);
-        }
-            
-        
-        
-        switch(gnCapState){
-            case CAPSTATE_IDLE:
-                return CAPSTATE_IDLE;
-            case CAPSTATE_BITING:  //biting
-                lTimeStamp=System.currentTimeMillis();
-                if((lTimeStamp-glCapTimeStamp)>300) {//300 ms to bite
-                   glCapTimeStamp=lTimeStamp;
-                   gnCapState=CAPSTATE_RAISING_NECK;
-                   return CAPSTATE_RAISING_NECK;
-               
-                }
-                return CAPSTATE_BITING;
-            case CAPSTATE_RAISING_NECK: //raising neck
-                srvoMonkeyNeck.setPosition(GIRAFFE_NECK_DOWN); //makes neck level to mat
-                gnCapState=CAPSTATE_EXTENDING_NECK;
-                return CAPSTATE_EXTENDING_NECK;
-            case CAPSTATE_EXTENDING_NECK:
-                int nNeckCurrPos=mtrMonkey.getCurrentPosition();
-                double dPwr=0d;
-                //check if need to extend or contract
-                if(CAP_NECK_EXTEND_POS>nNeckCurrPos) {
-                    //need to extend
-                    dPwr=GIRAFFE_EXTEND_PWR;
-                    mtrMonkey.setPower(GIRAFFE_EXTEND_PWR);
-                    return (CAPSTATE_EXTENDING_NECK);
-                    
-                }
-                //done extending
-                mtrMonkey.setPower(0d);
-                
-                gnCapState=CAPSTATE_IDLE;
-                gbCapStarted=false;
-                return (gnCapState);
-            default:
-                return (gnCapState); 
-        }
-    
-        
-    }
-
+//    public void autonExtendNeckLOp(LinearOpMode linopMode, int nExtendPos) {
+//        int nNeckCurrPos=mtrMonkey.getCurrentPosition();
+//        double dPwr=0d;
+//        //check if need to extend or contract
+//        if(nExtendPos>nNeckCurrPos) {
+//            //need to extend
+//            dPwr=GIRAFFE_EXTEND_PWR;
+//            while(nExtendPos>mtrMonkey.getCurrentPosition()){
+//                mtrMonkey.setPower(GIRAFFE_EXTEND_PWR);
+//            }
+//            mtrMonkey.setPower(0d);
+//        }
+//        else if (nExtendPos<nNeckCurrPos) {
+//            dPwr=GIRAFFE_EXTEND_PWR;
+//            while(nExtendPos<mtrMonkey.getCurrentPosition()){
+//                mtrMonkey.setPower(-GIRAFFE_EXTEND_PWR);
+//            }
+//            mtrMonkey.setPower(0d);
+//        }
+//    }
+//
+//    public void autonNeckDownLOp(LinearOpMode linopMode) {
+//        srvoMonkeyNeck.setPosition(GIRAFFE_NECK_DOWN);
+//    }
+//
+//    public void autonNeckUpLOp(LinearOpMode linopMode) {
+//        srvoMonkeyNeck.setPosition(GIRAFFE_NECK_UP);
+//    }
+//
+//    public void autonOpenMouthLOp(LinearOpMode linopMode) {
+//        srvoMonkeyMouth.setPosition(GIRAFFE_MOUTH_OPEN);
+//    }
+//
+//    public void autonCloseMouthLOp(LinearOpMode linopMode) {
+//        srvoMonkeyMouth.setPosition(GIRAFFE_MOUTH_CLOSED);
+//    }
+//    private int teleopCap(boolean bButtonPressed) {
+//        //if got here, the cap button was pressed
+//        //check if this is the first time pressed
+//        long lTimeStamp;
+//        if(bButtonPressed) {
+//            //starting capping
+//            glCapTimeStamp=System.currentTimeMillis();
+//            gnCapState=CAPSTATE_BITING;
+//            srvoMonkeyMouth.setPosition(GIRAFFE_BITE_ELEMENT);
+//        }
+//
+//
+//
+//        switch(gnCapState){
+//            case CAPSTATE_IDLE:
+//                return CAPSTATE_IDLE;
+//            case CAPSTATE_BITING:  //biting
+//                lTimeStamp=System.currentTimeMillis();
+//                if((lTimeStamp-glCapTimeStamp)>300) {//300 ms to bite
+//                   glCapTimeStamp=lTimeStamp;
+//                   gnCapState=CAPSTATE_RAISING_NECK;
+//                   return CAPSTATE_RAISING_NECK;
+//
+//                }
+//                return CAPSTATE_BITING;
+//            case CAPSTATE_RAISING_NECK: //raising neck
+//                srvoMonkeyNeck.setPosition(GIRAFFE_NECK_DOWN); //makes neck level to mat
+//                gnCapState=CAPSTATE_EXTENDING_NECK;
+//                return CAPSTATE_EXTENDING_NECK;
+//            case CAPSTATE_EXTENDING_NECK:
+//                int nNeckCurrPos=mtrMonkey.getCurrentPosition();
+//                double dPwr=0d;
+//                //check if need to extend or contract
+//                if(CAP_NECK_EXTEND_POS>nNeckCurrPos) {
+//                    //need to extend
+//                    dPwr=GIRAFFE_EXTEND_PWR;
+//                    mtrMonkey.setPower(GIRAFFE_EXTEND_PWR);
+//                    return (CAPSTATE_EXTENDING_NECK);
+//
+//                }
+//                //done extending
+//                mtrMonkey.setPower(0d);
+//
+//                gnCapState=CAPSTATE_IDLE;
+//                gbCapStarted=false;
+//                return (gnCapState);
+//            default:
+//                return (gnCapState);
+//        }
+//
+//
+//    }
 }
