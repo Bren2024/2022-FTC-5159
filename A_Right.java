@@ -1,11 +1,13 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcodeAS;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcodeAS.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcodeAS.trajectorysequence.TrajectorySequence;
 
 @Autonomous(name="RightAuto", group="Robot")
 public class A_Right extends LinearOpMode {
@@ -14,15 +16,27 @@ public class A_Right extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        Pose2d startPose = new Pose2d(0, 0, 0);
+        Pose2d startPose = new Pose2d(-4, -3, Math.toRadians(270));
 
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence trajSeq = drive.trajectorySequenceBuilder(startPose)
-                .forward(6)
-                .strafeLeft(24)
-                .forward(24)
-                .strafeLeft(12)
+//                .addTemporalMarker(0, () -> {
+//                    monkey.autoServoOp(this, true);
+//                })
+                .lineToConstantHeading(new Vector2d(0, 0))
+                .waitSeconds(1)
+                .lineToConstantHeading(new Vector2d(-24, 0))
+//                .addDisplacementMarker(() -> {
+//                    monkey.autoExtendMonkeyUp(this, 24);
+//                })
+                .lineToConstantHeading(new Vector2d(-24, 48))
+                .lineToConstantHeading(new Vector2d(-36, 48))
+//                .addDisplacementMarker(() -> {
+//                    monkey.(this, false);
+//                })
+                .waitSeconds(1)
+                .lineToConstantHeading(new Vector2d(0, 48))
                 .build();
 
         waitForStart();

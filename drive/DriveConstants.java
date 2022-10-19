@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive;
+package org.firstinspires.ftc.teamcodeAS.drive;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
@@ -54,7 +54,7 @@ public class DriveConstants {
      * empirically tuned.
      */
 //    public static double kV = 1.0 / rpmToVelocity(MAX_RPM);
-    public static double kV = 0.0115;
+    public static double kV = 0.012;
     public static double kA = 0.0025;
     public static double kStatic = 0.01;
 
